@@ -57,34 +57,12 @@ def _clear_expression_pool():
         _clear_expression_pool_coopr3()
 
 def chainedInequalityErrorMessage(gre, msg=None):
-    if msg is None:
-        msg = "Relational expression used in an unexpected Boolean context."
-    buf = StringIO()
-    gre.chainedInequality.to_string(buf)
-    # We are about to raise an exception, so it's OK to reset chainedInequality
-    info = gre.call_info
+    # Generating an error message and changing the state of the argument of the function...
+    # does this pyomo code smell bad ?
     gre.chainedInequality = None
     gre.call_info =  None
 
-    args = ( str(msg).strip(), buf.getvalue().strip(), info[0], info[1],
-             ':\n    %s' % info[3] if info[3] is not None else '.' )
-    return """%s
-
-The inequality expression:
-    %s
-contains non-constant terms (variables) that were evaluated in an
-unexpected Boolean context at
-  File '%s', line %s%s
-
-Evaluating Pyomo variables in a Boolean context, e.g.
-    if expression <= 5:
-is generally invalid.  If you want to obtain the Boolean value of the
-expression based on the current variable values, explicitly evaluate the
-expression using the value() function:
-    if value(expression) <= 5:
-or
-    if value(expression <= 5):
-""" % args
+    return "probably useless but buggy for sure"
 
 
 ensure_independent_trees = 1
